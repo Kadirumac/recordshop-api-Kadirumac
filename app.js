@@ -9,6 +9,7 @@ const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const apiRouter = require('./routes/api');
+const recordRouter = require('./routes/record')
 
 /** INIT */
 const app = express();
@@ -34,6 +35,15 @@ const db = low(adapter)
 /** LOGGING */
 app.use(logger('dev'));
 
+require('dotenv/config');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+//mongoDb connection
+mongoose.connect(process.env.DB_CONNECTION,
+  { useNewUrlParser: true },
+  () => console.log('Connected to DB!')  
+  );
+
 /** REQUEST PARSERS */
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -46,6 +56,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api', apiRouter);
+app.use('/records', recordRouter);
+
 
 /** EXPORT PATH */
 module.exports = app;
